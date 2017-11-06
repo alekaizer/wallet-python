@@ -1,6 +1,8 @@
 import requests
 import json
 from Crypto.Cipher import DES3
+from hashlib import md5
+import base64
 
 from wallet.utils.settings import baseUrl, AUTH_HEADER
 
@@ -42,6 +44,17 @@ class Config(object):
     def get_requests(self, url):
         pass
 
-    def encrypt(self, message):
-        cipher = DES3.new(self.public_key+self.public_key)
-        return cipher.encrypt(message)
+    def encrypt(self, message, enable_hashing=True):
+        if enable_hashing:
+            hashed_key = md5(self.public_key.encode()).digest()
+        else:
+            hashed_key = self.public_key
+
+        block_size = 8
+        padding_size = block_size - (len(message) % block_size)
+
+        if padding_size > 0:
+            message += chr(padding_size)*padding_size
+        cipher = DES3.new(hashed_key, DES3.MODE_ECB)
+        ciphered = cipher.encrypt(message.encode('utf-8'))
+        return base64.b64encode(ciphered).decode('utf-8')
