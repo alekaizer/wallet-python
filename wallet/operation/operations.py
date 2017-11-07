@@ -25,11 +25,13 @@ class Operations():
     def get_balance(self, phone_number, transaction_pin):
         data = {'PhoneNumber': phone_number, 'TransactionPin': transaction_pin}
 
-        return self.__util.post_requests(get_balance, data)
+        response = self.__util.post_requests(get_balance, data)
+        response['Balance'] = response.get('Message')
+        return response
 
     def create_wallet(self, first_name, last_name, email, phone_number,
                       password):
         data = {'FirstName': first_name, 'LastName': last_name, 'Email': email,
-                'PhoneNumber': phone_number, 'Password': password}
+                'phoneNumber': phone_number, 'Password': password}
 
         return self.__util.post_requests(_create_wallet, data)
