@@ -18,6 +18,9 @@ class Config(object):
         else:
             data = self.encrypt_sensibles(data)
             data['SecretKey'] = self.secret_key
+            if 'phoneNumber' in data:
+                data['PhoneNumber'] = data.get('phoneNumber')
+                del data['phoneNumber']
 
         _url = baseUrl + url
         headers = {'Authorization': AUTH_HEADER.format(self.public_key),
