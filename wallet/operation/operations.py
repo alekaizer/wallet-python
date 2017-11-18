@@ -2,7 +2,7 @@ from wallet.utils.settings import charge_wallet, credit_wallet, get_balance
 from wallet.utils.settings import create_wallet as _create_wallet
 
 
-class Operations():
+class Operations:
     def __init__(self, config):
         self.__util = config
 
@@ -15,12 +15,21 @@ class Operations():
 
         return self.__util.self.__util.post_requests(charge_wallet, data)
 
-    def credit_wallet(self, transaction_reference, phone_number, amount):
-        data = {'TransactionReference': transaction_reference,
-                'PhoneNumber': phone_number,
-                'Amount': amount}
+    def credit_wallet(self, transaction_reference, phone_number, amount,
+                      source="bank_account"):
+        response = {}
+        if source == "bank_account":
+            data = {'TransactionReference': transaction_reference,
+                    'PhoneNumber': phone_number,
+                    'Amount': amount}
 
-        return self.__util.post_requests(credit_wallet, data)
+            response = self.__util.post_requests(credit_wallet, data)
+        elif source == "credit_card":
+            # TODO
+            # The endpoint doesn't exist yet
+            data = {}
+
+        return response
 
     def get_balance(self, phone_number, transaction_pin):
         data = {'PhoneNumber': phone_number, 'TransactionPin': transaction_pin}
