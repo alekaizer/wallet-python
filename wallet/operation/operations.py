@@ -1,4 +1,5 @@
-from wallet.utils.settings import charge_wallet, credit_wallet, get_balance
+from wallet.utils.settings import charge_wallet, credit_wallet, get_balance, \
+    new_transaction
 from wallet.utils.settings import create_wallet as _create_wallet
 
 
@@ -15,21 +16,21 @@ class Operations:
 
         return self.__util.self.__util.post_requests(charge_wallet, data)
 
-    def credit_wallet(self, transaction_reference, phone_number, amount,
-                      source="bank_account"):
-        response = {}
-        if source == "bank_account":
-            data = {'TransactionReference': transaction_reference,
-                    'PhoneNumber': phone_number,
-                    'Amount': amount}
+    def credit_wallet_with(self, transaction_reference, phone_number, amount):
 
-            response = self.__util.post_requests(credit_wallet, data)
-        elif source == "credit_card":
-            # TODO
-            # The endpoint doesn't exist yet
-            data = {}
+        data = {'TransactionReference': transaction_reference,
+                'PhoneNumber': phone_number,
+                'Amount': amount}
 
-        return response
+        return self.__util.post_requests(credit_wallet, data)
+
+    def credit_wallet_with_card(self, merchant_reference, amount, name, email,
+                                phone_number, redirect_url):
+        data = {'MerchantReference': merchant_reference, 'Amount': amount,
+                'Email': email, 'PhoneNumber': phone_number, "name": name,
+                'RedirectUrl': redirect_url}
+
+        return self.__util.post_requests(new_transaction, data)
 
     def get_balance(self, phone_number, transaction_pin):
         data = {'PhoneNumber': phone_number, 'TransactionPin': transaction_pin}
