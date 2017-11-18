@@ -1,5 +1,3 @@
-# TODO
-# HTTPS
 baseUrl = 'https://fences.wallet.ng'
 
 new_transaction = "/transactions/new"
